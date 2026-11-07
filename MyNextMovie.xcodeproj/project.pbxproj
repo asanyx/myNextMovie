@@ -1,0 +1,367 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		A10000000000000000007001 /* Supabase in Frameworks */ = {isa = PBXBuildFile; productRef = A10000000000000000007003 /* Supabase */; };
+		AE595ABF309F59C400CE6633 /* Secrets.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = AE595ABD309F59AC00CE6633 /* Secrets.xcconfig */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		A1000000000000000000C001 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = A10000000000000000000001 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = A1000000000000000000A001;
+			remoteInfo = MyNextMovie;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		A1000000000000000000F001 /* MyNextMovie.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MyNextMovie.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		A1000000000000000000F002 /* MyNextMovieTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MyNextMovieTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		A1000000000000000000F003 /* App.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = App.xcconfig; sourceTree = "<group>"; };
+		A1000000000000000000F005 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		A1000000000000000000F006 /* Shared.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Shared.xcconfig; sourceTree = "<group>"; };
+		A1000000000000000000F007 /* Debug.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Debug.xcconfig; sourceTree = "<group>"; };
+		A1000000000000000000F008 /* Release.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Release.xcconfig; sourceTree = "<group>"; };
+		A1000000000000000000F009 /* Tests.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Tests.xcconfig; sourceTree = "<group>"; };
+		A1000000000000000000F00A /* MyNextMovie.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = MyNextMovie.xctestplan; sourceTree = "<group>"; };
+		AE595ABD309F59AC00CE6633 /* Secrets.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Secrets.xcconfig; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		A1000000000000000000E001 /* MyNextMovie */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = MyNextMovie;
+			sourceTree = "<group>";
+		};
+		A1000000000000000000E002 /* MyNextMovieTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = MyNextMovieTests;
+			sourceTree = "<group>";
+		};
+/* End PBXFileSystemSynchronizedRootGroup section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		A1000000000000000000B002 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A10000000000000000007001 /* Supabase in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A1000000000000000000B012 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		A1000000000000000000D001 = {
+			isa = PBXGroup;
+			children = (
+				A1000000000000000000E001 /* MyNextMovie */,
+				A1000000000000000000E002 /* MyNextMovieTests */,
+				A1000000000000000000D003 /* Config */,
+				A1000000000000000000F00A /* MyNextMovie.xctestplan */,
+				A1000000000000000000D002 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		A1000000000000000000D002 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				A1000000000000000000F001 /* MyNextMovie.app */,
+				A1000000000000000000F002 /* MyNextMovieTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		A1000000000000000000D003 /* Config */ = {
+			isa = PBXGroup;
+			children = (
+				A1000000000000000000F006 /* Shared.xcconfig */,
+				A1000000000000000000F007 /* Debug.xcconfig */,
+				A1000000000000000000F008 /* Release.xcconfig */,
+				A1000000000000000000F003 /* App.xcconfig */,
+				A1000000000000000000F009 /* Tests.xcconfig */,
+				A1000000000000000000F005 /* Info.plist */,
+				AE595ABD309F59AC00CE6633 /* Secrets.xcconfig */,
+			);
+			path = Config;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		A1000000000000000000A001 /* MyNextMovie */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A10000000000000000009002 /* Build configuration list for PBXNativeTarget "MyNextMovie" */;
+			buildPhases = (
+				A1000000000000000000B004 /* Lint */,
+				A1000000000000000000B001 /* Sources */,
+				A1000000000000000000B002 /* Frameworks */,
+				A1000000000000000000B003 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				A1000000000000000000E001 /* MyNextMovie */,
+			);
+			name = MyNextMovie;
+			packageProductDependencies = (
+				A10000000000000000007003 /* Supabase */,
+			);
+			productName = MyNextMovie;
+			productReference = A1000000000000000000F001 /* MyNextMovie.app */;
+			productType = "com.apple.product-type.application";
+		};
+		A1000000000000000000A002 /* MyNextMovieTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A10000000000000000009003 /* Build configuration list for PBXNativeTarget "MyNextMovieTests" */;
+			buildPhases = (
+				A1000000000000000000B011 /* Sources */,
+				A1000000000000000000B012 /* Frameworks */,
+				A1000000000000000000B013 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				A1000000000000000000C002 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				A1000000000000000000E002 /* MyNextMovieTests */,
+			);
+			name = MyNextMovieTests;
+			productName = MyNextMovieTests;
+			productReference = A1000000000000000000F002 /* MyNextMovieTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		A10000000000000000000001 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 2700;
+				LastUpgradeCheck = 2700;
+				TargetAttributes = {
+					A1000000000000000000A001 = {
+						CreatedOnToolsVersion = 27.0;
+					};
+					A1000000000000000000A002 = {
+						CreatedOnToolsVersion = 27.0;
+						TestTargetID = A1000000000000000000A001;
+					};
+				};
+			};
+			buildConfigurationList = A10000000000000000009001 /* Build configuration list for PBXProject "MyNextMovie" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				pl,
+				Base,
+			);
+			mainGroup = A1000000000000000000D001;
+			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				A10000000000000000007002 /* XCRemoteSwiftPackageReference "supabase-swift" */,
+			);
+			preferredProjectObjectVersion = 77;
+			productRefGroup = A1000000000000000000D002 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				A1000000000000000000A001 /* MyNextMovie */,
+				A1000000000000000000A002 /* MyNextMovieTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		A1000000000000000000B003 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				AE595ABF309F59C400CE6633 /* Secrets.xcconfig in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A1000000000000000000B013 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		A1000000000000000000B004 /* Lint */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = Lint;
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# Lint findings show up as warnings. Fix formatting with Editor > Structure > Format File with 'swift-format'.\n\"$SRCROOT/scripts/lint.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		A1000000000000000000B001 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A1000000000000000000B011 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		A1000000000000000000C002 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = A1000000000000000000A001 /* MyNextMovie */;
+			targetProxy = A1000000000000000000C001 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		A10000000000000000008001 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = A1000000000000000000F007 /* Debug.xcconfig */;
+			buildSettings = {
+			};
+			name = Debug;
+		};
+		A10000000000000000008002 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = A1000000000000000000F008 /* Release.xcconfig */;
+			buildSettings = {
+			};
+			name = Release;
+		};
+		A10000000000000000008003 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = A1000000000000000000F003 /* App.xcconfig */;
+			buildSettings = {
+				INFOPLIST_KEY_CFBundleDisplayName = "My Next Movie";
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = UIInterfaceOrientationPortrait;
+			};
+			name = Debug;
+		};
+		A10000000000000000008004 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = A1000000000000000000F003 /* App.xcconfig */;
+			buildSettings = {
+				INFOPLIST_KEY_CFBundleDisplayName = "My Next Movie";
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = UIInterfaceOrientationPortrait;
+			};
+			name = Release;
+		};
+		A10000000000000000008005 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = A1000000000000000000F009 /* Tests.xcconfig */;
+			buildSettings = {
+			};
+			name = Debug;
+		};
+		A10000000000000000008006 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = A1000000000000000000F009 /* Tests.xcconfig */;
+			buildSettings = {
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		A10000000000000000009001 /* Build configuration list for PBXProject "MyNextMovie" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A10000000000000000008001 /* Debug */,
+				A10000000000000000008002 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		A10000000000000000009002 /* Build configuration list for PBXNativeTarget "MyNextMovie" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A10000000000000000008003 /* Debug */,
+				A10000000000000000008004 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		A10000000000000000009003 /* Build configuration list for PBXNativeTarget "MyNextMovieTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A10000000000000000008005 /* Debug */,
+				A10000000000000000008006 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		A10000000000000000007002 /* XCRemoteSwiftPackageReference "supabase-swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/supabase/supabase-swift";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.55.3;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		A10000000000000000007003 /* Supabase */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = A10000000000000000007002 /* XCRemoteSwiftPackageReference "supabase-swift" */;
+			productName = Supabase;
+		};
+/* End XCSwiftPackageProductDependency section */
+	};
+	rootObject = A10000000000000000000001 /* Project object */;
+}

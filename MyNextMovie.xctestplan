@@ -1,0 +1,39 @@
+{
+  "configurations" : [
+    {
+      "id" : "5D2E8C1A-3B4F-4A6E-9C7D-1E2F3A4B5C6D",
+      "name" : "Default",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "codeCoverage" : {
+      "targets" : [
+        {
+          "containerPath" : "container:MyNextMovie.xcodeproj",
+          "identifier" : "A1000000000000000000A001",
+          "name" : "MyNextMovie"
+        }
+      ]
+    },
+    "targetForVariableExpansion" : {
+      "containerPath" : "container:MyNextMovie.xcodeproj",
+      "identifier" : "A1000000000000000000A001",
+      "name" : "MyNextMovie"
+    },
+    "testExecutionOrdering" : "random"
+  },
+  "testTargets" : [
+    {
+      "parallelizable" : true,
+      "target" : {
+        "containerPath" : "container:MyNextMovie.xcodeproj",
+        "identifier" : "A1000000000000000000A002",
+        "name" : "MyNextMovieTests"
+      }
+    }
+  ],
+  "version" : 1
+}
