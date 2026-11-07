@@ -192,7 +192,9 @@ private struct GenreRow: View {
 }
 
 #Preview {
-    NavigationStack {
-        MovieDetailView(movie: sampleMovies[0], loadDetails: { _ in emptyMovieDetails })
+    PopularMoviesPreview { movies in
+        NavigationStack {
+            MovieDetailView(movie: movies[0], loadDetails: fetchMovieDetails)
+        }
     }
 }

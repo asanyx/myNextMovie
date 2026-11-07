@@ -40,7 +40,9 @@ struct MovieCardView: View {
 }
 
 #Preview {
-    MovieCardView(movie: sampleMovies[0])
-        .frame(width: 170)
-        .padding()
+    PopularMoviesPreview { movies in
+        MovieCardView(movie: movies[0])
+            .frame(width: 170)
+            .padding()
+    }
 }

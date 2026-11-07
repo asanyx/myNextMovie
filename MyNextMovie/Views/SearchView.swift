@@ -152,7 +152,7 @@ private struct SearchResultRow: View {
 
 #Preview {
     SearchView(
-        viewModel: SearchViewModel(searchMovies: searchSampleMovies),
-        loadDetails: { _ in emptyMovieDetails }
+        viewModel: SearchViewModel(searchMovies: searchTMDBMovies),
+        loadDetails: fetchMovieDetails
     )
 }

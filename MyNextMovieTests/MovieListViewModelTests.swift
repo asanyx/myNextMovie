@@ -12,12 +12,12 @@ struct MovieListViewModelTests {
     }
 
     @Test func loadsMovies() async {
-        let viewModel = MovieListViewModel(loadMovies: { sampleMovies })
+        let viewModel = MovieListViewModel(loadMovies: { testMovies })
 
         await viewModel.load()
 
         #expect(viewModel.state == .loaded)
-        #expect(viewModel.movies == sampleMovies)
+        #expect(viewModel.movies == testMovies)
     }
 
     @Test func showsErrorWhenLoadingFails() async {

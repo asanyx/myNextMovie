@@ -7,7 +7,7 @@ struct MovieDetailViewModelTests {
     @Test func startsIdleWithEmptyDetails() {
         let viewModel = MovieDetailViewModel(
             movieId: 603,
-            loadDetails: { _ in emptyMovieDetails }
+            loadDetails: { _ in testMovieDetails }
         )
 
         #expect(viewModel.state == .idle)
@@ -16,26 +16,16 @@ struct MovieDetailViewModelTests {
 
     @Test func loadsDetailsOfItsMovie() async {
         var receivedMovieId = 0
-        let expectedDetails = MovieDetails(
-            id: 603,
-            tagline: "Believe the unbelievable.",
-            runtime: 136,
-            credits: Credits(cast: [], crew: []),
-            videos: VideoList(results: []),
-            releaseDates: ReleaseDateList(results: []),
-            watchProviders: WatchProviderList(results: [:]),
-            recommendations: TMDBMoviePage(results: [])
-        )
         let viewModel = MovieDetailViewModel(movieId: 603) { movieId in
             receivedMovieId = movieId
-            return expectedDetails
+            return testMovieDetails
         }
 
         await viewModel.load()
 
         #expect(receivedMovieId == 603)
         #expect(viewModel.state == .loaded)
-        #expect(viewModel.details == expectedDetails)
+        #expect(viewModel.details == testMovieDetails)
     }
 
     @Test func showsErrorWhenLoadingFails() async {
@@ -53,7 +43,7 @@ struct MovieDetailViewModelTests {
         var callCount = 0
         let viewModel = MovieDetailViewModel(movieId: 603) { _ in
             callCount += 1
-            return emptyMovieDetails
+            return testMovieDetails
         }
 
         await viewModel.loadIfNeeded()

@@ -1,6 +1,8 @@
 import SwiftUI
 
 private let gridMinimumColumnWidth: CGFloat = 150
+private let placeholderMovieCount = 6
+private let placeholderMovieTitle = "Movie title"
 
 struct MovieListView: View {
     @State private var viewModel: MovieListViewModel
@@ -39,9 +41,9 @@ struct MovieListView: View {
         }
     }
 
-    /// Sample movies drawn as gray shapes while the real ones load.
+    /// Empty movies drawn as gray shapes while the real ones load.
     private var loadingGrid: some View {
-        MovieGrid(title: "Popular", movies: sampleMovies)
+        MovieGrid(title: "Popular", movies: makePlaceholderMovies())
             .redacted(reason: .placeholder)
             .allowsHitTesting(false)
     }
@@ -97,7 +99,21 @@ private struct MovieGridItem: View {
 
 #Preview {
     MovieListView(
-        viewModel: MovieListViewModel(loadMovies: loadSampleMovies),
-        loadDetails: { _ in emptyMovieDetails }
+        viewModel: MovieListViewModel(loadMovies: fetchPopularMovies),
+        loadDetails: fetchMovieDetails
     )
+}
+
+private func makePlaceholderMovies() -> [Movie] {
+    (0..<placeholderMovieCount).map { movieId in
+        Movie(
+            id: movieId,
+            title: placeholderMovieTitle,
+            overview: "",
+            releaseDate: "",
+            posterPath: nil,
+            voteAverage: 0,
+            genreIds: []
+        )
+    }
 }

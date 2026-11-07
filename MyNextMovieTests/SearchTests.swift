@@ -5,16 +5,16 @@ import Testing
 @MainActor
 struct FilterMoviesTests {
     @Test func emptyQueryAndNoGenreReturnsEveryMovie() {
-        #expect(filterMovies(sampleMovies, query: "", genreId: noGenreId) == sampleMovies)
+        #expect(filterMovies(testMovies, query: "", genreId: noGenreId) == testMovies)
     }
 
     @Test func matchesTitleIgnoringCase() {
-        let foundMovies = filterMovies(sampleMovies, query: "matrix", genreId: noGenreId)
+        let foundMovies = filterMovies(testMovies, query: "matrix", genreId: noGenreId)
         #expect(titlesOf(foundMovies) == ["The Matrix"])
     }
 
     @Test func matchesKeywordInOverview() {
-        let foundMovies = filterMovies(sampleMovies, query: "wormhole", genreId: noGenreId)
+        let foundMovies = filterMovies(testMovies, query: "wormhole", genreId: noGenreId)
         #expect(titlesOf(foundMovies) == ["Interstellar"])
     }
 
@@ -34,19 +34,19 @@ struct FilterMoviesTests {
     }
 
     @Test func filtersByGenre() {
-        let foundMovies = filterMovies(sampleMovies, query: "", genreId: genreIdAnimation)
+        let foundMovies = filterMovies(testMovies, query: "", genreId: genreIdAnimation)
         #expect(titlesOf(foundMovies) == ["Spirited Away"])
     }
 
     @Test
     func combinesQueryAndGenre() {
-        let foundMovies = filterMovies(sampleMovies, query: "matrix", genreId: genreIdAnimation)
+        let foundMovies = filterMovies(testMovies, query: "matrix", genreId: genreIdAnimation)
 
         #expect(foundMovies.isEmpty)
     }
 
     @Test func trimsSpacesAroundQuery() {
-        let foundMovies = filterMovies(sampleMovies, query: "  inception ", genreId: noGenreId)
+        let foundMovies = filterMovies(testMovies, query: "  inception ", genreId: noGenreId)
         #expect(titlesOf(foundMovies) == ["Inception"])
     }
 }
@@ -54,7 +54,7 @@ struct FilterMoviesTests {
 @MainActor
 struct SearchViewModelTests {
     @Test func staysIdleWithoutQueryOrGenre() async {
-        let viewModel = SearchViewModel(searchMovies: { _, _ in sampleMovies })
+        let viewModel = SearchViewModel(searchMovies: { _, _ in testMovies })
         viewModel.query = "   "
 
         await viewModel.search()

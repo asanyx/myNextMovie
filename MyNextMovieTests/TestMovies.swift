@@ -1,20 +1,13 @@
-/// Sample data for the first lab and SwiftUI previews.
-/// A TMDB request replaces it in later labs.
-func loadSampleMovies() async throws -> [Movie] {
-    return sampleMovies
-}
+@testable import MyNextMovie
 
-func searchSampleMovies(query: String, genreId: Int) async throws -> [Movie] {
-    return filterMovies(sampleMovies, query: query, genreId: genreId)
-}
-
-let sampleMovies: [Movie] = [
+@MainActor
+let testMovies: [Movie] = [
     Movie(
         id: 603,
         title: "The Matrix",
         overview: "A hacker named Neo learns that the world he lives in is a simulation.",
         releaseDate: "1999-03-31",
-        posterPath: nil,
+        posterPath: "/f89U3ADr1oiB1s9GkdPOEpXUk5H.jpg",
         voteAverage: 8.2,
         genreIds: [genreIdAction, genreIdScienceFiction]
     ),
@@ -23,7 +16,7 @@ let sampleMovies: [Movie] = [
         title: "Inception",
         overview: "A thief who steals secrets from dreams is asked to plant an idea instead.",
         releaseDate: "2010-07-15",
-        posterPath: nil,
+        posterPath: "/oYuLEt3zVCKq57qu2F8dT7NIa6f.jpg",
         voteAverage: 8.4,
         genreIds: [genreIdAction, genreIdScienceFiction, genreIdAdventure]
     ),
@@ -33,7 +26,7 @@ let sampleMovies: [Movie] = [
         overview:
             "A team of astronauts travels through a wormhole to find a new home for humanity.",
         releaseDate: "2014-11-05",
-        posterPath: nil,
+        posterPath: "/gEU2QniE6E77NI6lCU6MxlNBvIx.jpg",
         voteAverage: 8.4,
         genreIds: [genreIdAdventure, genreIdDrama, genreIdScienceFiction]
     ),
@@ -42,7 +35,7 @@ let sampleMovies: [Movie] = [
         title: "Pulp Fiction",
         overview: "Several intertwined stories from the Los Angeles criminal underworld.",
         releaseDate: "1994-09-10",
-        posterPath: nil,
+        posterPath: "/d5iIlFn5s0ImszYzBPb8JPIfbXD.jpg",
         voteAverage: 8.5,
         genreIds: [genreIdThriller, genreIdCrime]
     ),
@@ -51,8 +44,38 @@ let sampleMovies: [Movie] = [
         title: "Spirited Away",
         overview: "Ten-year-old Chihiro wanders into a world of spirits and must save her parents.",
         releaseDate: "2001-07-20",
-        posterPath: nil,
+        posterPath: "/39wmItIWsg5sZMyRUHLkWBcuVCM.jpg",
         voteAverage: 8.5,
         genreIds: [genreIdAnimation, genreIdFamily, genreIdFantasy]
     ),
+    Movie(
+        id: 546554,
+        title: "Knives Out",
+        overview: "A detective investigates the death of a patriarch in an eccentric family.",
+        releaseDate: "2019-11-27",
+        posterPath: "/pThyQovXQrw2m0s9x82twj48Jq4.jpg",
+        voteAverage: 7.8,
+        genreIds: [genreIdComedy, genreIdCrime, genreIdMystery]
+    ),
+    Movie(
+        id: 597,
+        title: "Titanic",
+        overview: "Two passengers fall in love aboard the ill-fated RMS Titanic.",
+        releaseDate: "1997-11-18",
+        posterPath: "/9xjZS2rlVxm8SFx8kPC3aIGCOYQ.jpg",
+        voteAverage: 7.9,
+        genreIds: [genreIdDrama, genreIdRomance]
+    ),
 ]
+
+@MainActor
+let testMovieDetails = MovieDetails(
+    id: 603,
+    tagline: "Believe the unbelievable.",
+    runtime: 136,
+    credits: Credits(cast: [], crew: []),
+    videos: VideoList(results: []),
+    releaseDates: ReleaseDateList(results: []),
+    watchProviders: WatchProviderList(results: [:]),
+    recommendations: TMDBMoviePage(results: [])
+)
