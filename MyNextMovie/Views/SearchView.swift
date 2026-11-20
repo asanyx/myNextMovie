@@ -1,3 +1,4 @@
+import SwiftData
 import SwiftUI
 
 /// How long to wait after the last keystroke before searching.
@@ -155,4 +156,5 @@ private struct SearchResultRow: View {
         viewModel: SearchViewModel(searchMovies: searchTMDBMovies),
         loadDetails: fetchMovieDetails
     )
+    .modelContainer(for: storedModelTypes, inMemory: true)
 }

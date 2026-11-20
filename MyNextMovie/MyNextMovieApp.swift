@@ -1,3 +1,4 @@
+import SwiftData
 import SwiftUI
 
 @main
@@ -6,6 +7,7 @@ struct MyNextMovieApp: App {
         WindowGroup {
             RootView()
         }
+        .modelContainer(for: storedModelTypes)
     }
 }
 
@@ -17,6 +19,9 @@ private struct RootView: View {
                     viewModel: MovieListViewModel(loadMovies: fetchPopularMovies),
                     loadDetails: fetchMovieDetails
                 )
+            }
+            Tab("Saved", systemImage: symbolNameSaved) {
+                SavedMoviesView(loadDetails: fetchMovieDetails)
             }
             Tab("Search", systemImage: symbolNameSearch, role: .search) {
                 SearchView(

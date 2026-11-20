@@ -1,3 +1,4 @@
+import SwiftData
 import SwiftUI
 
 private let backdropHeight: CGFloat = 440
@@ -41,6 +42,7 @@ struct MovieDetailView: View {
         .task { await viewModel.loadIfNeeded() }
         .ignoresSafeArea(edges: .top)
         .navigationBarTitleDisplayMode(.inline)
+        .toolbar { SaveMovieButton(movie: movie) }
     }
 }
 
@@ -197,4 +199,5 @@ private struct GenreRow: View {
             MovieDetailView(movie: movies[0], loadDetails: fetchMovieDetails)
         }
     }
+    .modelContainer(for: storedModelTypes, inMemory: true)
 }

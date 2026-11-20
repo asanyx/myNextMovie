@@ -14,6 +14,8 @@ let thumbnailCornerRadius: CGFloat = 6
 
 // SF Symbols used outside the genre table.
 let symbolNameMovies = "film"
+let symbolNameSaved = "bookmark"
+let symbolNameSavedFilled = "bookmark.fill"
 let symbolNameSearch = "magnifyingglass"
 let symbolNameError = "exclamationmark.triangle"
 let symbolNameRatingStar = "star.fill"
