@@ -1,4 +1,5 @@
 import Foundation
+import SwiftData
 
 let tmdbScheme = "https"
 let tmdbHost = "api.themoviedb.org"
@@ -124,6 +125,25 @@ func fetchMovieDetails(movieId: Int) async throws -> MovieDetails {
     let data = try await fetchTMDBData(
         tmdbMovieDetailsURL(movieId: movieId, apiKey: apiKey)
     )
+    return try decodeTMDBMovieDetails(data)
+}
+
+func loadPopularMovies(cache: ModelContext) async throws -> [Movie] {
+    let data = try await fetchWithCacheFallback(cache, key: "popular") {
+        let apiKey = try requiredTMDBAPIKey()
+        return try await fetchTMDBData(tmdbPopularURL(apiKey: apiKey))
+    }
+    return try decodeTMDBMovies(data)
+}
+
+func loadTMDBMovieDetails(movieId: Int, cache: ModelContext) async throws -> MovieDetails {
+    let cacheKey = "movie/" + String(movieId)
+    let data = try await fetchWithCacheFallback(cache, key: cacheKey) {
+        let apiKey = try requiredTMDBAPIKey()
+        return try await fetchTMDBData(
+            tmdbMovieDetailsURL(movieId: movieId, apiKey: apiKey)
+        )
+    }
     return try decodeTMDBMovieDetails(data)
 }
 

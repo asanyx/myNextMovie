@@ -37,7 +37,21 @@ final class SearchHistoryEntry {
     }
 }
 
+@Model
+final class CachedResponse {
+    @Attribute(.unique) var key: String
+    var data: Data
+    var fetchedAt: Date
+
+    init(key: String, data: Data, fetchedAt: Date) {
+        self.key = key
+        self.data = data
+        self.fetchedAt = fetchedAt
+    }
+}
+
 let storedModelTypes: [any PersistentModel.Type] = [
     SavedMovie.self,
     SearchHistoryEntry.self,
+    CachedResponse.self,
 ]

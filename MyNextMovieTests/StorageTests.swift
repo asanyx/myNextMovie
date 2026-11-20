@@ -101,6 +101,77 @@ struct SearchHistoryTests {
 }
 
 @MainActor
+struct ResponseCacheTests {
+    @Test func missingKeyGivesEmptyData() throws {
+        let container = try makeTestContainer()
+        let context = container.mainContext
+
+        #expect(cachedResponseData(context, key: "missing").isEmpty)
+    }
+
+    @Test func storingAgainReplacesData() throws {
+        let container = try makeTestContainer()
+        let context = container.mainContext
+        let firstData = Data("first".utf8)
+        let secondData = Data("second".utf8)
+        let start = Date(timeIntervalSince1970: 0)
+
+        storeCachedResponse(context, key: "popular", data: firstData, now: start)
+        storeCachedResponse(
+            context,
+            key: "popular",
+            data: secondData,
+            now: start.addingTimeInterval(60)
+        )
+
+        #expect(cachedResponseData(context, key: "popular") == secondData)
+        #expect(try context.fetchCount(FetchDescriptor<CachedResponse>()) == 1)
+    }
+
+    @Test func freshAnswerIsReturnedAndCached() async throws {
+        let container = try makeTestContainer()
+        let context = container.mainContext
+        let freshData = Data("fresh".utf8)
+
+        let returnedData = try await fetchWithCacheFallback(context, key: "popular") {
+            freshData
+        }
+
+        #expect(returnedData == freshData)
+        #expect(cachedResponseData(context, key: "popular") == freshData)
+    }
+
+    @Test func cachedAnswerIsReturnedWhenOffline() async throws {
+        let container = try makeTestContainer()
+        let context = container.mainContext
+        let cachedData = Data("cached".utf8)
+        storeCachedResponse(
+            context,
+            key: "popular",
+            data: cachedData,
+            now: Date(timeIntervalSince1970: 0)
+        )
+
+        let returnedData = try await fetchWithCacheFallback(context, key: "popular") {
+            throw NoConnection()
+        }
+
+        #expect(returnedData == cachedData)
+    }
+
+    @Test func errorIsRethrownWhenNothingCached() async throws {
+        let container = try makeTestContainer()
+        let context = container.mainContext
+
+        await #expect(throws: NoConnection.self) {
+            try await fetchWithCacheFallback(context, key: "popular") {
+                throw NoConnection()
+            }
+        }
+    }
+}
+
+@MainActor
 func makeTestContainer() throws -> ModelContainer {
     let configuration = ModelConfiguration(isStoredInMemoryOnly: true)
     return try ModelContainer(

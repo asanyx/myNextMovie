@@ -91,3 +91,44 @@ private func recentSearchesWithoutLimit(_ context: ModelContext) -> [SearchHisto
     )
     return (try? context.fetch(descriptor)) ?? []
 }
+
+func storeCachedResponse(_ context: ModelContext, key: String, data: Data, now: Date) {
+    let descriptor = FetchDescriptor<CachedResponse>(
+        predicate: #Predicate { response in
+            response.key == key
+        }
+    )
+    if let cachedResponse = try? context.fetch(descriptor).first {
+        cachedResponse.data = data
+        cachedResponse.fetchedAt = now
+    } else {
+        context.insert(CachedResponse(key: key, data: data, fetchedAt: now))
+    }
+}
+
+func cachedResponseData(_ context: ModelContext, key: String) -> Data {
+    let descriptor = FetchDescriptor<CachedResponse>(
+        predicate: #Predicate { response in
+            response.key == key
+        }
+    )
+    return (try? context.fetch(descriptor).first?.data) ?? Data()
+}
+
+func fetchWithCacheFallback(
+    _ context: ModelContext,
+    key: String,
+    fetch: () async throws -> Data
+) async throws -> Data {
+    do {
+        let data = try await fetch()
+        storeCachedResponse(context, key: key, data: data, now: .now)
+        return data
+    } catch {
+        let cachedData = cachedResponseData(context, key: key)
+        if !cachedData.isEmpty {
+            return cachedData
+        }
+        throw error
+    }
+}
