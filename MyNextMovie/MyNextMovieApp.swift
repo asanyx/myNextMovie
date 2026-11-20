@@ -15,22 +15,41 @@ private struct RootView: View {
     @Environment(\.modelContext) private var modelContext
 
     var body: some View {
-        TabView {
-            Tab("Movies", systemImage: symbolNameMovies) {
-                MovieListView(
-                    viewModel: MovieListViewModel(loadMovies: loadPopularMoviesWithCache),
-                    loadDetails: loadDetailsWithCache
-                )
+        AppContent(modelContext: modelContext)
+    }
+}
+
+private struct AppContent: View {
+    @State private var accountViewModel: AccountViewModel
+    let modelContext: ModelContext
+
+    init(modelContext: ModelContext) {
+        self.modelContext = modelContext
+        let viewModel = AccountViewModel(
+            account: supabaseAccountService,
+            syncSavedMovies: {
+                // Cloud synchronization is added in task 3.
+            },
+            clearSavedMovies: {
+                clearSavedMovies(modelContext)
             }
-            Tab("Saved", systemImage: symbolNameSaved) {
-                SavedMoviesView(loadDetails: loadDetailsWithCache)
-            }
-            Tab("Search", systemImage: symbolNameSearch) {
-                SearchView(
-                    viewModel: SearchViewModel(searchMovies: searchTMDBMovies),
-                    loadDetails: loadDetailsWithCache
-                )
-            }
+        )
+        #if DEBUG
+            viewModel.email = testAccountEmail
+            viewModel.password = testAccountPassword
+        #endif
+        _accountViewModel = State(initialValue: viewModel)
+    }
+
+    var body: some View {
+        if accountViewModel.isSignedIn {
+            AppTabs(
+                accountViewModel: accountViewModel,
+                loadMovies: loadPopularMoviesWithCache,
+                loadDetails: loadDetailsWithCache
+            )
+        } else {
+            SignInView(viewModel: accountViewModel)
         }
     }
 
@@ -40,5 +59,34 @@ private struct RootView: View {
 
     private func loadDetailsWithCache(movieId: Int) async throws -> MovieDetails {
         return try await loadTMDBMovieDetails(movieId: movieId, cache: modelContext)
+    }
+}
+
+private struct AppTabs: View {
+    let accountViewModel: AccountViewModel
+    let loadMovies: MovieLoader
+    let loadDetails: MovieDetailsLoader
+
+    var body: some View {
+        TabView {
+            Tab("Movies", systemImage: symbolNameMovies) {
+                MovieListView(
+                    viewModel: MovieListViewModel(loadMovies: loadMovies),
+                    loadDetails: loadDetails
+                )
+            }
+            Tab("Saved", systemImage: symbolNameSaved) {
+                SavedMoviesView(loadDetails: loadDetails)
+            }
+            Tab("Account", systemImage: symbolNameAccount) {
+                AccountView(viewModel: accountViewModel)
+            }
+            Tab("Search", systemImage: symbolNameSearch) {
+                SearchView(
+                    viewModel: SearchViewModel(searchMovies: searchTMDBMovies),
+                    loadDetails: loadDetails
+                )
+            }
+        }
     }
 }

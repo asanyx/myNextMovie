@@ -27,6 +27,14 @@ func toggleSavedMovie(_ context: ModelContext, _ movie: Movie, now: Date) {
     }
 }
 
+func clearSavedMovies(_ context: ModelContext) {
+    let descriptor = FetchDescriptor<SavedMovie>()
+    let savedMovies = (try? context.fetch(descriptor)) ?? []
+    for savedMovie in savedMovies {
+        context.delete(savedMovie)
+    }
+}
+
 func movieFromSaved(_ savedMovie: SavedMovie) -> Movie {
     return Movie(
         id: savedMovie.movieId,
