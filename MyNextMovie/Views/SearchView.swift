@@ -9,6 +9,7 @@ private let searchResultTitleMaxLines = 2
 private let searchInputKeySeparator = "|"
 
 struct SearchView: View {
+    @Environment(\.modelContext) private var modelContext
     @State private var viewModel: SearchViewModel
     private let loadDetails: MovieDetailsLoader
 
@@ -27,7 +28,14 @@ struct SearchView: View {
                 content.frame(maxHeight: .infinity)
             }
             .navigationTitle("Search")
-            .searchable(text: $viewModel.query, prompt: "Title or keyword")
+            .searchable(
+                text: $viewModel.query,
+                placement: .navigationBarDrawer(displayMode: .always),
+                prompt: "Title or keyword"
+            )
+            .onSubmit(of: .search) {
+                recordSearch(modelContext, query: viewModel.query, now: .now)
+            }
             .navigationDestination(for: Movie.self) { movie in
                 MovieDetailView(movie: movie, loadDetails: loadDetails)
             }
@@ -45,11 +53,7 @@ struct SearchView: View {
     private var content: some View {
         switch viewModel.state {
         case .idle:
-            ContentUnavailableView(
-                "Find a movie",
-                systemImage: symbolNameSearch,
-                description: Text("Search by title or keyword, or pick a genre.")
-            )
+            SearchStartView(selectQuery: selectQuery)
         case .loading:
             ProgressView()
         case .loaded:
@@ -69,11 +73,77 @@ struct SearchView: View {
         }
         await viewModel.search()
     }
+
+    private func selectQuery(_ query: String) {
+        viewModel.query = query
+        recordSearch(modelContext, query: query, now: .now)
+    }
 }
 
 /// Changes whenever the search input changes, which restarts the search task.
 private func searchInputKey(_ query: String, _ selectedGenreId: Int) -> String {
     return String(selectedGenreId) + searchInputKeySeparator + query
+}
+
+private struct SearchStartView: View {
+    @Environment(\.modelContext) private var modelContext
+    @Query(sort: \SearchHistoryEntry.searchedAt, order: .reverse)
+    private var searchHistory: [SearchHistoryEntry]
+
+    let selectQuery: (String) -> Void
+
+    var body: some View {
+        if searchHistory.isEmpty {
+            ContentUnavailableView(
+                "Find a movie",
+                systemImage: symbolNameSearch,
+                description: Text("Search by title or keyword, or pick a genre.")
+            )
+        } else {
+            List {
+                Section {
+                    ForEach(searchHistory) { entry in
+                        SearchHistoryRow(query: entry.query, selectQuery: selectQuery)
+                    }
+                } header: {
+                    SearchHistoryHeader(clear: clearHistory)
+                }
+            }
+            .listStyle(.plain)
+        }
+    }
+
+    private func clearHistory() {
+        clearSearchHistory(modelContext)
+    }
+}
+
+private struct SearchHistoryHeader: View {
+    let clear: () -> Void
+
+    var body: some View {
+        HStack {
+            Text("Recent Searches")
+            Spacer()
+            Button("Clear", action: clear)
+                .textCase(nil)
+        }
+    }
+}
+
+private struct SearchHistoryRow: View {
+    let query: String
+    let selectQuery: (String) -> Void
+
+    var body: some View {
+        Button {
+            selectQuery(query)
+        } label: {
+            Label(query, systemImage: "clock.arrow.circlepath")
+                .frame(maxWidth: .infinity, alignment: .leading)
+        }
+        .buttonStyle(.plain)
+    }
 }
 
 /// Every genre from `genreTable` as a chip in one row that scrolls sideways.

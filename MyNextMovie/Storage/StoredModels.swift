@@ -26,4 +26,18 @@ final class SavedMovie {
     }
 }
 
-let storedModelTypes: [any PersistentModel.Type] = [SavedMovie.self]
+@Model
+final class SearchHistoryEntry {
+    @Attribute(.unique) var query: String
+    var searchedAt: Date
+
+    init(query: String, searchedAt: Date) {
+        self.query = query
+        self.searchedAt = searchedAt
+    }
+}
+
+let storedModelTypes: [any PersistentModel.Type] = [
+    SavedMovie.self,
+    SearchHistoryEntry.self,
+]

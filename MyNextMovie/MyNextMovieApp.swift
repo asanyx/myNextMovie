@@ -23,7 +23,7 @@ private struct RootView: View {
             Tab("Saved", systemImage: symbolNameSaved) {
                 SavedMoviesView(loadDetails: fetchMovieDetails)
             }
-            Tab("Search", systemImage: symbolNameSearch, role: .search) {
+            Tab("Search", systemImage: symbolNameSearch) {
                 SearchView(
                     viewModel: SearchViewModel(searchMovies: searchTMDBMovies),
                     loadDetails: fetchMovieDetails
