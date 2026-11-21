@@ -1,5 +1,4 @@
 import Foundation
-import Supabase
 import Testing
 
 @testable import MyNextMovie
@@ -134,8 +133,63 @@ struct MovieFiltersTextTests {
 
     @Test func errorAnswerShowsItsMessage() {
         let data = Data(#"{"message":"Sign in to search."}"#.utf8)
-        let error = FunctionsError.httpError(code: 401, data: data)
-        #expect(functionErrorMessage(error) == "Sign in to search.")
+        #expect(
+            functionErrorMessage(statusCode: 401, data: data)
+                == "Sign in to search."
+        )
+    }
+}
+
+@MainActor
+struct DiscoverRequestTests {
+    @Test func withoutFiltersHasNoParameters() {
+        let request = tmdbDiscoverRequest(
+            noMovieFilters,
+            personIds: [],
+            keywordIds: []
+        )
+        #expect(request.path == tmdbPathDiscoverMovies)
+        #expect(request.parameters.isEmpty)
+    }
+
+    @Test func anyGenreAndKeywordButEveryPerson() {
+        let request = tmdbDiscoverRequest(
+            makeFilters(genreIds: [genreIdComedy, genreIdDrama]),
+            personIds: [10, 20],
+            keywordIds: [30, 40]
+        )
+        #expect(parameter(request, tmdbGenresParameter) == "35|18")
+        #expect(parameter(request, tmdbPeopleParameter) == "10,20")
+        #expect(parameter(request, tmdbKeywordsParameter) == "30|40")
+    }
+
+    @Test func yearsCoverWholeYears() {
+        let request = tmdbDiscoverRequest(
+            makeFilters(fromYear: 1990, toYear: 1999),
+            personIds: [],
+            keywordIds: []
+        )
+        #expect(parameter(request, tmdbReleaseDateFromParameter) == "1990-01-01")
+        #expect(parameter(request, tmdbReleaseDateToParameter) == "1999-12-31")
+    }
+
+    @Test func nameSearchSendsTheName() {
+        let request = tmdbNameSearchRequest(
+            path: tmdbPathSearchPeople,
+            name: "Keanu Reeves"
+        )
+        #expect(request.path == tmdbPathSearchPeople)
+        #expect(parameter(request, tmdbQueryParameter) == "Keanu Reeves")
+    }
+
+    @Test func firstIdIsTheBestMatch() throws {
+        let data = Data(#"{"results":[{"id":6384},{"id":123}]}"#.utf8)
+        #expect(try decodeFirstTMDBId(data) == 6384)
+        #expect(try decodeFirstTMDBId(Data(#"{"results":[]}"#.utf8)) == noTMDBId)
+    }
+
+    private func parameter(_ request: TMDBRequest, _ name: String) -> String? {
+        request.parameters.first { $0.name == name }?.value
     }
 }
 

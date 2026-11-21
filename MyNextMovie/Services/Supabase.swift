@@ -8,6 +8,11 @@ let supabaseSavedMovieConflictKey = "user_id,id"
 let minimumPasswordLength = 6
 let testAccountEmail = "test@test.test"
 let testAccountPassword = "test"
+let supabaseFunctionMovieFilters = "movie-filters"
+
+nonisolated struct MovieWishRequest: Encodable {
+    let wish: String
+}
 
 struct SupabaseError: LocalizedError {
     let message: String
@@ -21,13 +26,11 @@ private struct FunctionErrorAnswer: Decodable {
     let message: String
 }
 
-func functionErrorMessage(_ error: Error) -> String {
-    guard case FunctionsError.httpError(_, let data) = error,
-        let answer = try? JSONDecoder().decode(FunctionErrorAnswer.self, from: data)
-    else {
-        return error.localizedDescription
+func functionErrorMessage(statusCode: Int, data: Data) -> String {
+    if let answer = try? JSONDecoder().decode(FunctionErrorAnswer.self, from: data) {
+        return answer.message
     }
-    return answer.message
+    return "Supabase function failed with HTTP status \(statusCode)."
 }
 
 private let missingSupabaseKeysMessage =
@@ -58,6 +61,21 @@ private func requireSupabaseClient() throws -> SupabaseClient {
     )
     sharedSupabaseClient = client
     return client
+}
+
+func parseWishWithAI(_ wish: String) async throws -> MovieFilters {
+    let client = try requireSupabaseClient()
+    let options = FunctionInvokeOptions(body: MovieWishRequest(wish: wish))
+    do {
+        return try await client.functions.invoke(
+            supabaseFunctionMovieFilters,
+            options: options
+        )
+    } catch FunctionsError.httpError(let status, let data) {
+        throw SupabaseError(
+            message: functionErrorMessage(statusCode: status, data: data)
+        )
+    }
 }
 
 @MainActor
