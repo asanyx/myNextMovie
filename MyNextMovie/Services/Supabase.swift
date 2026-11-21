@@ -35,7 +35,14 @@ private func requireSupabaseClient() throws -> SupabaseClient {
         throw SupabaseError(message: missingSupabaseKeysMessage)
     }
 
-    let client = SupabaseClient(supabaseURL: url, supabaseKey: key)
+    let options = SupabaseClientOptions(
+        auth: .init(emitLocalSessionAsInitialSession: true)
+    )
+    let client = SupabaseClient(
+        supabaseURL: url,
+        supabaseKey: key,
+        options: options
+    )
     sharedSupabaseClient = client
     return client
 }
