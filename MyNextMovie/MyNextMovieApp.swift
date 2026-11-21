@@ -90,7 +90,7 @@ private struct AppTabs: View {
         )
         return CinemaMapView(
             viewModel: viewModel,
-            findRoute: { _, _, _ in noRoute },
+            findRoute: findMapKitRoute,
             placement: .tab
         )
     }

@@ -1,6 +1,85 @@
+import MapKit
 import Testing
 
 @testable import MyNextMovie
+
+@MainActor
+struct CinemaDetailViewModelTests {
+    @Test
+    func findsNoRouteWithoutLocation() async {
+        var requestCount = 0
+        let viewModel = CinemaDetailViewModel(
+            cinema: testCinemaDCF,
+            userLocation: fallbackUserLocation,
+            findRoute: { _, _, _ in
+                requestCount += 1
+                return testRoute
+            }
+        )
+
+        await viewModel.loadRoute()
+
+        #expect(requestCount == 0)
+        #expect(viewModel.routeState == .idle)
+    }
+
+    @Test
+    func findsRouteForSelectedTravelMode() async {
+        var requestedMode = TravelMode.walking
+        let viewModel = makeDetailViewModel(
+            findRoute: { _, _, travelMode in
+                requestedMode = travelMode
+                return testRoute
+            }
+        )
+        viewModel.travelMode = .driving
+
+        await viewModel.loadRoute()
+
+        #expect(requestedMode == .driving)
+        #expect(viewModel.routeState == .loaded)
+        #expect(viewModel.route.travelTime == testRoute.travelTime)
+        #expect(viewModel.route.distanceInMeters == testRoute.distanceInMeters)
+    }
+
+    @Test
+    func showsErrorWhenRouteFails() async {
+        let viewModel = makeDetailViewModel(
+            findRoute: { _, _, _ in
+                throw NoRouteFound()
+            }
+        )
+
+        await viewModel.loadRoute()
+
+        #expect(viewModel.routeState == .failed)
+        #expect(viewModel.errorMessage == "Maps found no way to this cinema.")
+    }
+
+    @Test
+    func routeSummaryHasTimeAndDistance() {
+        #expect(formattedTravelTime(12 * 60) == "12 min")
+        #expect(routeSummary(testRoute) == "12 min · 950 m")
+    }
+
+    private var testRoute: CinemaRoute {
+        return CinemaRoute(
+            line: MKPolyline(),
+            travelTime: 12 * 60,
+            distanceInMeters: 950
+        )
+    }
+
+    private func makeDetailViewModel(
+        findRoute: @escaping CinemaRouteFinder
+    ) -> CinemaDetailViewModel {
+        return CinemaDetailViewModel(
+            cinema: testCinemaDCF,
+            userLocation: testUserLocation,
+            findRoute: findRoute
+        )
+    }
+}
 
 @MainActor
 struct CinemaMapViewModelTests {

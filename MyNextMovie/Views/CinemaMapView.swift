@@ -93,7 +93,11 @@ struct CinemaMapView: View {
             .navigationTitle("Cinemas")
             .navigationBarTitleDisplayMode(.inline)
             .navigationDestination(for: Cinema.self) { cinema in
-                CinemaOverviewView(cinema: cinema)
+                CinemaDetailView(
+                    cinema: cinema,
+                    userLocation: viewModel.userLocation,
+                    findRoute: findRoute
+                )
             }
             .toolbar {
                 if placement == .sheet {
@@ -187,23 +191,6 @@ private struct CinemaRow: View {
         .listRowBackground(
             isSelected ? Color.accentColor.opacity(0.12) : Color.clear
         )
-    }
-}
-
-private struct CinemaOverviewView: View {
-    let cinema: Cinema
-
-    var body: some View {
-        List {
-            Section {
-                Text(cinema.address)
-                let distance = formattedDistance(cinema.distanceInMeters)
-                if !distance.isEmpty {
-                    Text(distance)
-                }
-            }
-        }
-        .navigationTitle(cinema.name)
     }
 }
 

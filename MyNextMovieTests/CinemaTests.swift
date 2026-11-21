@@ -5,6 +5,30 @@ import Testing
 @testable import MyNextMovie
 
 @MainActor
+struct MapKitConversionTests {
+    @Test
+    func mapItemForCinemaKeepsNameAndPosition() {
+        let mapItem = mapItemForCinema(testCinemaNoweHoryzonty)
+
+        #expect(mapItem.name == testCinemaNoweHoryzonty.name)
+        #expect(
+            mapItem.placemark.coordinate.latitude
+                == testCinemaNoweHoryzonty.latitude
+        )
+        #expect(
+            mapItem.placemark.coordinate.longitude
+                == testCinemaNoweHoryzonty.longitude
+        )
+    }
+
+    @Test
+    func travelModeBecomesMapKitTransportType() {
+        #expect(transportTypeForMapKit(.walking) == .walking)
+        #expect(transportTypeForMapKit(.driving) == .automobile)
+    }
+}
+
+@MainActor
 struct CinemaTests {
     @Test func sortsCinemasClosestFirst() {
         let sortedCinemas = cinemasSortedByDistance(
