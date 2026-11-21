@@ -17,6 +17,19 @@ struct SupabaseError: LocalizedError {
     }
 }
 
+private struct FunctionErrorAnswer: Decodable {
+    let message: String
+}
+
+func functionErrorMessage(_ error: Error) -> String {
+    guard case FunctionsError.httpError(_, let data) = error,
+        let answer = try? JSONDecoder().decode(FunctionErrorAnswer.self, from: data)
+    else {
+        return error.localizedDescription
+    }
+    return answer.message
+}
+
 private let missingSupabaseKeysMessage =
     "Missing Supabase keys. Add them to Config/Secrets.xcconfig."
 private var sharedSupabaseClient: SupabaseClient?
