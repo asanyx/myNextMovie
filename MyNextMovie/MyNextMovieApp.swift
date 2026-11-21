@@ -82,6 +82,20 @@ private struct AppTabs: View {
         return unsyncedMovies.count + removedMovies.count
     }
 
+    private var search: some View {
+        let viewModel = SearchViewModel(searchMovies: searchTMDBMovies)
+        let wishViewModel = WishSearchViewModel(
+            parseWish: parseWishWithAI,
+            searchByFilters: searchTMDBMoviesByFilters,
+            searchByText: searchTMDBMovies
+        )
+        return SearchView(
+            viewModel: viewModel,
+            wishViewModel: wishViewModel,
+            loadDetails: loadDetails
+        )
+    }
+
     private var cinemaMap: some View {
         let viewModel = CinemaMapViewModel(
             cinemas: wroclawCinemas,
@@ -113,10 +127,7 @@ private struct AppTabs: View {
                 AccountView(viewModel: accountViewModel)
             }
             Tab("Search", systemImage: symbolNameSearch) {
-                SearchView(
-                    viewModel: SearchViewModel(searchMovies: searchTMDBMovies),
-                    loadDetails: loadDetails
-                )
+                search
             }
         }
         .task {
