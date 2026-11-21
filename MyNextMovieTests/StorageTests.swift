@@ -30,6 +30,46 @@ struct SavedMovieTests {
 
         #expect(moviesFromSaved(savedCopies) == [movie])
     }
+
+    @Test func removingMovieTheAccountHasLeavesAMark() throws {
+        let container = try makeTestContainer()
+        let context = container.mainContext
+        let movie = testMovies[0]
+        context.insert(
+            SavedMovie(movie: movie, savedAt: .now, isInCloud: true)
+        )
+
+        toggleSavedMovie(context, movie, now: .now)
+
+        #expect(!isMovieSaved(context, movieId: movie.id))
+        #expect(try context.fetchCount(FetchDescriptor<RemovedSavedMovie>()) == 1)
+    }
+
+    @Test func removingMovieOnlyOnDeviceLeavesNoMark() throws {
+        let container = try makeTestContainer()
+        let context = container.mainContext
+        let movie = testMovies[0]
+
+        toggleSavedMovie(context, movie, now: .now)
+        toggleSavedMovie(context, movie, now: .now)
+
+        #expect(!isMovieSaved(context, movieId: movie.id))
+        #expect(try context.fetchCount(FetchDescriptor<RemovedSavedMovie>()) == 0)
+    }
+
+    @Test func clearRemovesMoviesAndMarks() throws {
+        let container = try makeTestContainer()
+        let context = container.mainContext
+        context.insert(
+            SavedMovie(movie: testMovies[0], savedAt: .now, isInCloud: true)
+        )
+        context.insert(RemovedSavedMovie(movieId: testMovies[1].id))
+
+        clearSavedMovies(context)
+
+        #expect(try context.fetchCount(FetchDescriptor<SavedMovie>()) == 0)
+        #expect(try context.fetchCount(FetchDescriptor<RemovedSavedMovie>()) == 0)
+    }
 }
 
 @MainActor

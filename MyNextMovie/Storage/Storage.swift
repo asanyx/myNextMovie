@@ -19,19 +19,46 @@ func isMovieSaved(_ context: ModelContext, movieId: Int) -> Bool {
 func toggleSavedMovie(_ context: ModelContext, _ movie: Movie, now: Date) {
     let savedCopies = fetchSavedMovies(context, movieId: movie.id)
     if savedCopies.isEmpty {
-        context.insert(SavedMovie(movie: movie, savedAt: now))
+        deleteRemovalMarks(context, movieId: movie.id)
+        context.insert(SavedMovie(movie: movie, savedAt: now, isInCloud: false))
     } else {
+        let shouldRemoveFromCloud = savedCopies.contains { $0.isInCloud }
         for savedCopy in savedCopies {
             context.delete(savedCopy)
+        }
+        if shouldRemoveFromCloud && fetchRemovalMarks(context, movieId: movie.id).isEmpty {
+            context.insert(RemovedSavedMovie(movieId: movie.id))
         }
     }
 }
 
 func clearSavedMovies(_ context: ModelContext) {
-    let descriptor = FetchDescriptor<SavedMovie>()
-    let savedMovies = (try? context.fetch(descriptor)) ?? []
+    let savedMovies = (try? context.fetch(FetchDescriptor<SavedMovie>())) ?? []
     for savedMovie in savedMovies {
         context.delete(savedMovie)
+    }
+
+    let removalMarks = (try? context.fetch(FetchDescriptor<RemovedSavedMovie>())) ?? []
+    for removalMark in removalMarks {
+        context.delete(removalMark)
+    }
+}
+
+private func fetchRemovalMarks(
+    _ context: ModelContext,
+    movieId: Int
+) -> [RemovedSavedMovie] {
+    let descriptor = FetchDescriptor<RemovedSavedMovie>(
+        predicate: #Predicate { removalMark in
+            removalMark.movieId == movieId
+        }
+    )
+    return (try? context.fetch(descriptor)) ?? []
+}
+
+private func deleteRemovalMarks(_ context: ModelContext, movieId: Int) {
+    for removalMark in fetchRemovalMarks(context, movieId: movieId) {
+        context.delete(removalMark)
     }
 }
 

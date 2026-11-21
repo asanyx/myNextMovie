@@ -71,3 +71,69 @@ let supabaseAccountService = AccountService(
     signUp: signUpToSupabase,
     signOut: signOutOfSupabase
 )
+
+nonisolated struct CloudSavedMovie: Codable, Equatable {
+    let id: Int
+    let title: String
+    let overview: String
+    let releaseDate: String
+    let posterPath: String?
+    let voteAverage: Double
+    let genreIds: [Int]
+    let savedAt: Date
+
+    enum CodingKeys: String, CodingKey {
+        case id
+        case title
+        case overview
+        case releaseDate = "release_date"
+        case posterPath = "poster_path"
+        case voteAverage = "vote_average"
+        case genreIds = "genre_ids"
+        case savedAt = "saved_at"
+    }
+}
+
+func fetchCloudSavedMovies() async throws -> [CloudSavedMovie] {
+    let client = try requireSupabaseClient()
+    let cloudMovies: [CloudSavedMovie] =
+        try await client
+        .from(supabaseSavedMoviesTable)
+        .select()
+        .order(supabaseSavedAtColumn, ascending: false)
+        .execute()
+        .value
+    return cloudMovies
+}
+
+func uploadCloudSavedMovies(_ cloudMovies: [CloudSavedMovie]) async throws {
+    if cloudMovies.isEmpty {
+        return
+    }
+
+    let client = try requireSupabaseClient()
+    try await client
+        .from(supabaseSavedMoviesTable)
+        .upsert(
+            cloudMovies,
+            onConflict: supabaseSavedMovieConflictKey,
+            returning: .minimal,
+            ignoreDuplicates: true
+        )
+        .execute()
+}
+
+func removeCloudSavedMovie(movieId: Int) async throws {
+    let client = try requireSupabaseClient()
+    try await client
+        .from(supabaseSavedMoviesTable)
+        .delete(returning: .minimal)
+        .eq(supabaseMovieIdColumn, value: movieId)
+        .execute()
+}
+
+let supabaseSavedMoviesCloud = SavedMoviesCloud(
+    fetchMovies: fetchCloudSavedMovies,
+    uploadMovies: uploadCloudSavedMovies,
+    removeMovie: removeCloudSavedMovie
+)

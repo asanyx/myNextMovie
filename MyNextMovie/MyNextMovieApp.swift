@@ -28,7 +28,10 @@ private struct AppContent: View {
         let viewModel = AccountViewModel(
             account: supabaseAccountService,
             syncSavedMovies: {
-                // Cloud synchronization is added in task 3.
+                try await syncSavedMovies(
+                    modelContext,
+                    cloud: supabaseSavedMoviesCloud
+                )
             },
             clearSavedMovies: {
                 clearSavedMovies(modelContext)
@@ -63,9 +66,21 @@ private struct AppContent: View {
 }
 
 private struct AppTabs: View {
+    @Environment(\.scenePhase) private var scenePhase
+    @Query(
+        filter: #Predicate<SavedMovie> { savedMovie in
+            !savedMovie.isInCloud
+        }
+    ) private var unsyncedMovies: [SavedMovie]
+    @Query private var removedMovies: [RemovedSavedMovie]
+
     let accountViewModel: AccountViewModel
     let loadMovies: MovieLoader
     let loadDetails: MovieDetailsLoader
+
+    private var pendingChangeCount: Int {
+        return unsyncedMovies.count + removedMovies.count
+    }
 
     var body: some View {
         TabView {
@@ -86,6 +101,23 @@ private struct AppTabs: View {
                     viewModel: SearchViewModel(searchMovies: searchTMDBMovies),
                     loadDetails: loadDetails
                 )
+            }
+        }
+        .task {
+            await accountViewModel.syncSavedMovies()
+        }
+        .onChange(of: scenePhase) { _, newPhase in
+            if newPhase == .active {
+                Task {
+                    await accountViewModel.syncSavedMovies()
+                }
+            }
+        }
+        .onChange(of: pendingChangeCount) { oldCount, newCount in
+            if newCount > oldCount {
+                Task {
+                    await accountViewModel.syncSavedMovies()
+                }
             }
         }
     }
