@@ -50,13 +50,25 @@ private let matrixDetailsJSON = """
           {
             "iso_3166_1": "PL",
             "release_dates": [
-              {"certification": ""},
-              {"certification": "16"}
+              {
+                "certification": "",
+                "release_date": "1999-03-31T00:00:00.000Z",
+                "type": 3
+              },
+              {
+                "certification": "16",
+                "release_date": "1999-03-31T00:00:00.000Z",
+                "type": 3
+              }
             ]
           },
           {
             "iso_3166_1": "US",
-            "release_dates": [{"certification": "R"}]
+            "release_dates": [{
+              "certification": "R",
+              "release_date": "1999-03-31T00:00:00.000Z",
+              "type": 3
+            }]
           }
         ]
       },
@@ -292,6 +304,105 @@ struct MovieDetailsTests {
     }
 }
 
+@MainActor
+struct InCinemasTests {
+    private let today = Date(timeIntervalSince1970: 1_793_923_200)
+
+    @Test
+    func recentCinemaPremiereIsInCinemas() {
+        let details = detailsWithRelease(
+            date: "2026-10-17T00:00:00.000Z",
+            type: releaseTypeTheatrical,
+            countryCode: "PL"
+        )
+
+        #expect(isInCinemas(details, regionCode: "PL", today: today))
+    }
+
+    @Test
+    func limitedReleaseCountsToo() {
+        let details = detailsWithRelease(
+            date: "2026-10-01T00:00:00.000Z",
+            type: releaseTypeTheatricalLimited,
+            countryCode: "PL"
+        )
+
+        #expect(isInCinemas(details, regionCode: "PL", today: today))
+    }
+
+    @Test
+    func oldPremiereIsNotInCinemas() {
+        let details = detailsWithRelease(
+            date: "2026-09-24T00:00:00.000Z",
+            type: releaseTypeTheatrical,
+            countryCode: "PL"
+        )
+
+        #expect(!isInCinemas(details, regionCode: "PL", today: today))
+    }
+
+    @Test
+    func futurePremiereIsNotInCinemasYet() {
+        let details = detailsWithRelease(
+            date: "2026-11-07T00:00:00.000Z",
+            type: releaseTypeTheatrical,
+            countryCode: "PL"
+        )
+
+        #expect(!isInCinemas(details, regionCode: "PL", today: today))
+    }
+
+    @Test
+    func digitalReleaseIsNotCinema() {
+        let details = detailsWithRelease(
+            date: "2026-10-17T00:00:00.000Z",
+            type: 4,
+            countryCode: "PL"
+        )
+
+        #expect(!isInCinemas(details, regionCode: "PL", today: today))
+    }
+
+    @Test
+    func premiereInAnotherCountryDoesNotCount() {
+        let details = detailsWithRelease(
+            date: "2026-10-17T00:00:00.000Z",
+            type: releaseTypeTheatrical,
+            countryCode: "US"
+        )
+
+        #expect(!isInCinemas(details, regionCode: "PL", today: today))
+    }
+
+    @Test
+    func unreadableDateIsNotInCinemas() {
+        let details = detailsWithRelease(
+            date: "not-a-date",
+            type: releaseTypeTheatrical,
+            countryCode: "PL"
+        )
+
+        #expect(!isInCinemas(details, regionCode: "PL", today: today))
+    }
+
+    private func detailsWithRelease(
+        date: String,
+        type: Int,
+        countryCode: String
+    ) -> MovieDetails {
+        let release = ReleaseDate(
+            certification: "",
+            releaseDate: date,
+            type: type
+        )
+        let country = CountryReleaseDates(
+            countryCode: countryCode,
+            releaseDates: [release]
+        )
+        return makeMovieDetails(releaseDates: [country])
+    }
+}
+
 private func decodedMatrixDetails() throws -> MovieDetails {
     try decodeTMDBMovieDetails(Data(matrixDetailsJSON.utf8))
 }
@@ -299,7 +410,8 @@ private func decodedMatrixDetails() throws -> MovieDetails {
 private func makeMovieDetails(
     runtime: Int? = nil,
     crew: [CrewMember] = [],
-    videos: [Video] = []
+    videos: [Video] = [],
+    releaseDates: [CountryReleaseDates] = []
 ) -> MovieDetails {
     MovieDetails(
         id: 1,
@@ -307,7 +419,7 @@ private func makeMovieDetails(
         runtime: runtime,
         credits: Credits(cast: [], crew: crew),
         videos: VideoList(results: videos),
-        releaseDates: ReleaseDateList(results: []),
+        releaseDates: ReleaseDateList(results: releaseDates),
         watchProviders: WatchProviderList(results: [:]),
         recommendations: TMDBMoviePage(results: [])
     )

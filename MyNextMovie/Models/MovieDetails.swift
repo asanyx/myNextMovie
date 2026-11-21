@@ -74,7 +74,13 @@ nonisolated struct CountryReleaseDates: Decodable, Equatable {
 
 nonisolated struct ReleaseDate: Decodable, Equatable {
     let certification: String
+    let releaseDate: String
+    let type: Int
 }
+
+let releaseTypeTheatricalLimited = 2
+let releaseTypeTheatrical = 3
+let typicalCinemaRunInDays = 42
 
 nonisolated struct WatchProviderList: Decodable, Equatable {
     let results: [String: CountryWatchProviders]
@@ -135,6 +141,53 @@ func directorNames(_ details: MovieDetails) -> String {
         }
     }
     return names.joined(separator: ", ")
+}
+
+func daysSinceReleaseDay(_ releaseDate: String, today: Date) -> Int {
+    let dateText = String(releaseDate.prefix(10))
+    let format = Date.ISO8601FormatStyle()
+        .year()
+        .month()
+        .day()
+
+    guard let releaseDay = try? format.parse(dateText) else {
+        return -1
+    }
+
+    var calendar = Calendar(identifier: .gregorian)
+    calendar.timeZone = TimeZone(secondsFromGMT: 0) ?? .gmt
+    let releaseStart = calendar.startOfDay(for: releaseDay)
+    let todayStart = calendar.startOfDay(for: today)
+    let days =
+        calendar.dateComponents(
+            [.day],
+            from: releaseStart,
+            to: todayStart
+        ).day ?? -1
+
+    return days >= 0 ? days : -1
+}
+
+func isInCinemas(
+    _ details: MovieDetails,
+    regionCode: String,
+    today: Date
+) -> Bool {
+    guard
+        let country = details.releaseDates.results.first(where: {
+            $0.countryCode == regionCode
+        })
+    else {
+        return false
+    }
+
+    return country.releaseDates.contains { release in
+        let isCinemaRelease =
+            release.type == releaseTypeTheatricalLimited
+            || release.type == releaseTypeTheatrical
+        let days = daysSinceReleaseDay(release.releaseDate, today: today)
+        return isCinemaRelease && (0...typicalCinemaRunInDays).contains(days)
+    }
 }
 
 func ageCertification(_ details: MovieDetails, regionCode: String) -> String {

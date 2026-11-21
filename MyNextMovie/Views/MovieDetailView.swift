@@ -11,6 +11,7 @@ private let posterShadowOffset: CGFloat = 10
 struct MovieDetailView: View {
     let movie: Movie
     @State private var viewModel: MovieDetailViewModel
+    @State private var isShowingCinemas = false
 
     init(movie: Movie, loadDetails: @escaping MovieDetailsLoader) {
         self.movie = movie
@@ -28,6 +29,16 @@ struct MovieDetailView: View {
                 MovieBackdrop(movie: movie)
                 MovieInfo(movie: movie, details: viewModel.details)
                     .padding(.horizontal)
+                if isInCinemas(
+                    viewModel.details,
+                    regionCode: watchRegionCode,
+                    today: Date.now
+                ) {
+                    NowInCinemasButton {
+                        isShowingCinemas = true
+                    }
+                    .padding(.horizontal)
+                }
                 MovieDetailLoadContent(
                     state: viewModel.state,
                     details: viewModel.details,
@@ -43,6 +54,37 @@ struct MovieDetailView: View {
         .ignoresSafeArea(edges: .top)
         .navigationBarTitleDisplayMode(.inline)
         .toolbar { SaveMovieButton(movie: movie) }
+        .sheet(isPresented: $isShowingCinemas) {
+            CinemaMapView(
+                viewModel: CinemaMapViewModel(
+                    cinemas: wroclawCinemas,
+                    findUserLocation: findUserLocation,
+                    lastKnownLocation: lastKnownUserLocation
+                ),
+                findRoute: findMapKitRoute,
+                placement: .sheet
+            )
+        }
+    }
+}
+
+private struct NowInCinemasButton: View {
+    let showCinemas: () -> Void
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: spacingSmall) {
+            Button(action: showCinemas) {
+                Label("Now in Cinemas", systemImage: symbolNameCinema)
+                    .frame(maxWidth: .infinity)
+            }
+            .buttonStyle(.borderedProminent)
+
+            Text(
+                "See the cinemas near you. Showtimes are on each cinema's website."
+            )
+            .font(.footnote)
+            .foregroundStyle(.secondary)
+        }
     }
 }
 
