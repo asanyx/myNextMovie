@@ -82,6 +82,19 @@ private struct AppTabs: View {
         return unsyncedMovies.count + removedMovies.count
     }
 
+    private var cinemaMap: some View {
+        let viewModel = CinemaMapViewModel(
+            cinemas: wroclawCinemas,
+            findUserLocation: findUserLocation,
+            lastKnownLocation: lastKnownUserLocation
+        )
+        return CinemaMapView(
+            viewModel: viewModel,
+            findRoute: { _, _, _ in noRoute },
+            placement: .tab
+        )
+    }
+
     var body: some View {
         TabView {
             Tab("Movies", systemImage: symbolNameMovies) {
@@ -92,6 +105,9 @@ private struct AppTabs: View {
             }
             Tab("Saved", systemImage: symbolNameSaved) {
                 SavedMoviesView(loadDetails: loadDetails)
+            }
+            Tab("Cinemas", systemImage: symbolNameCinema) {
+                cinemaMap
             }
             Tab("Account", systemImage: symbolNameAccount) {
                 AccountView(viewModel: accountViewModel)
